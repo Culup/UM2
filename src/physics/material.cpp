@@ -605,6 +605,258 @@ Material::setUO2(Float wt_u235, Float wt_gad) noexcept
   addNuclide(8016, n_o);
 }
 
+// H2O preset material.
+// Atomic weights from IUPAC/CIAAW.
+// Assumes light water (H2O).
+// Populates this Material with isotopic ZAIDs and number densities.
+// Requires _density to be set.
+void
+Material::setH2O() noexcept
+{
+  ASSERT(_density > 0);
+  ASSERT(m_h2o > 0);
+
+  // Following same naming conventions as setUO2
+
+  // Atomic masses
+  //---------------------------------------------------------------------------
+  Float constexpr m_h1 = 1.00784;
+  Float constexpr m_o16 = 15.9949146;
+
+  // Compute the average mass of H2O
+  //---------------------------------------------------------------------------
+  Float const m_h2o = 2 * m_h1 + m_o16;
+
+  // Add the hydrogen and oxygen to the material
+  //---------------------------------------------------------------------------
+  Float const n_h2o = _density * n_avo_barn / m_h2o;
+  Float const n_h = 2 * n_h2o;
+  Float const n_o = n_h2o;
+
+  addNuclide(1001, n_h);
+  addNuclide(8016, n_o);
+}
+
+// Zircaloy-4 preset material.
+// Nominal composition (wt%): Zr-1.5%Sn-0.2%Fe-0.1%Cr (balance Zr).
+// Natural isotopic abundances / standard atomic weights from IUPAC/CIAAW.
+// Source for nominal composition: https://www.atimaterials.com/Products/Documents/datasheets/zirconium/alloy/Zr_nuke_waste_disposal_v1.pdf
+// Populates this Material with isotopic ZAIDs and number densities.
+// Requires _density to be set.
+void
+Material::setZirc4() noexcept 
+{
+  ASSERT(_density > 0);
+
+  // Following same naming conventions as setUO2
+
+  // Atomic masses
+  //---------------------------------------------------------------------------
+  Float constexpr m_zr = 91.222;
+  Float constexpr m_sn = 118.710;
+  Float constexpr m_fe = 55.845;
+  Float constexpr m_cr = 51.9961;
+
+  // Weight percents
+  //---------------------------------------------------------------------------
+  Float constexpr wt_sn = 0.015;
+  Float constexpr wt_fe = 0.002;
+  Float constexpr wt_cr = 0.001;
+  Float constexpr wt_zr = 1 - (wt_sn + wt_fe + wt_cr);
+
+  ASSERT(wt_zr > 0);
+  // Compute element number densities
+  //---------------------------------------------------------------------------
+  Float const n_zr = wt_zr * _density * n_avo_barn / m_zr;
+  Float const n_sn = wt_sn * _density * n_avo_barn / m_sn;
+  Float const n_fe = wt_fe * _density * n_avo_barn / m_fe;
+  Float const n_cr = wt_cr * _density * n_avo_barn / m_cr;
+
+  // Zirconium natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_zr90 = 51.47 / 100;
+  Float constexpr ab_zr91 = 11.23 / 100;
+  Float constexpr ab_zr92 = 17.16 / 100;
+  Float constexpr ab_zr94 = 17.36 / 100;
+  Float constexpr ab_zr96 =  2.78 / 100;
+
+  // Tin natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_sn112 =  0.97 / 100;
+  Float constexpr ab_sn114 =  0.66 / 100;
+  Float constexpr ab_sn115 =  0.34 / 100;
+  Float constexpr ab_sn116 = 14.54 / 100;
+  Float constexpr ab_sn117 =  7.68 / 100;
+  Float constexpr ab_sn118 = 24.22 / 100;
+  Float constexpr ab_sn119 =  8.59 / 100;
+  Float constexpr ab_sn120 = 32.58 / 100;
+  Float constexpr ab_sn122 =  4.63 / 100;
+  Float constexpr ab_sn124 =  5.79 / 100;
+
+  // Iron natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_fe54 =  5.845 / 100;
+  Float constexpr ab_fe56 = 91.754 / 100;
+  Float constexpr ab_fe57 =  2.119 / 100;
+  Float constexpr ab_fe58 =  0.282 / 100;
+
+  // Chromium natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_cr50 =  4.345 / 100;
+  Float constexpr ab_cr52 = 83.789 / 100;
+  Float constexpr ab_cr53 =  9.501 / 100;
+  Float constexpr ab_cr54 =  2.365 / 100;
+
+  // Compute number density per isotope and add to material
+  //---------------------------------------------------------------------------
+  addNuclide(40090, ab_zr90 * n_zr);
+  addNuclide(40091, ab_zr91 * n_zr);
+  addNuclide(40092, ab_zr92 * n_zr);
+  addNuclide(40094, ab_zr94 * n_zr);
+  addNuclide(40096, ab_zr96 * n_zr);
+  addNuclide(50112, ab_sn112 * n_sn);
+  addNuclide(50114, ab_sn114 * n_sn);
+  addNuclide(50115, ab_sn115 * n_sn);
+  addNuclide(50116, ab_sn116 * n_sn);
+  addNuclide(50117, ab_sn117 * n_sn);
+  addNuclide(50118, ab_sn118 * n_sn);
+  addNuclide(50119, ab_sn119 * n_sn);
+  addNuclide(50120, ab_sn120 * n_sn);
+  addNuclide(50122, ab_sn122 * n_sn);
+  addNuclide(50124, ab_sn124 * n_sn);
+  addNuclide(26054, ab_fe54 * n_fe);
+  addNuclide(26056, ab_fe56 * n_fe);
+  addNuclide(26057, ab_fe57 * n_fe);
+  addNuclide(26058, ab_fe58 * n_fe);
+  addNuclide(24050, ab_cr50 * n_cr);
+  addNuclide(24052, ab_cr52 * n_cr);
+  addNuclide(24053, ab_cr53 * n_cr);
+  addNuclide(24054, ab_cr54 * n_cr);
+}
+
+// Stainless Steel 304 preset material.
+// Nominal composition (wt%): Cr-19%Ni-9.25%C-0.08%Mn-2%Si-1%P-0.045%S-0.03% (balance Fe).
+// Natural isotopic abundances / standard atomic weights from IUPAC/CIAAW.
+// Source for nominal composition: https://www.espimetals.com/index.php/technical-data/200-Stainless%20Steel%20304%20-%20Alloy%20Composition
+// Populates this Material with isotopic ZAIDs and number densities.
+// Requires _density to be set.
+void
+Material::setSS304() noexcept
+{
+  ASSERT(_density > 0);
+
+  // Following same naming conventions as setUO2
+
+  // Atomic masses
+  //---------------------------------------------------------------------------
+  Float constexpr m_fe = 55.845;
+  Float constexpr m_cr = 51.9961;
+  Float constexpr m_ni = 58.6934;
+  Float constexpr m_c  = 12.011;
+  Float constexpr m_mn = 54.938043;
+  Float constexpr m_si = 28.085;
+  Float constexpr m_p  = 30.973761998;
+  Float constexpr m_s  = 32.065;
+
+  // Weight percents
+  //---------------------------------------------------------------------------
+  Float constexpr wt_cr = 0.19;
+  Float constexpr wt_ni = 0.0925;
+  Float constexpr wt_c  = 0.00080;
+  Float constexpr wt_mn = 0.02;
+  Float constexpr wt_si = 0.010;
+  Float constexpr wt_p  = 0.00045;
+  Float constexpr wt_s  = 0.00030;
+  Float constexpr wt_fe = 1 - (wt_cr + wt_ni + wt_c + wt_mn + wt_si + wt_p + wt_s);
+
+  ASSERT(wt_fe > 0);
+  // Compute element number densities
+  //---------------------------------------------------------------------------
+  Float const n_fe = wt_fe * _density * n_avo_barn / m_fe;
+  Float const n_cr = wt_cr * _density * n_avo_barn / m_cr;
+  Float const n_ni = wt_ni * _density * n_avo_barn / m_ni;
+  Float const n_c  =  wt_c * _density * n_avo_barn / m_c;
+  Float const n_mn = wt_mn * _density * n_avo_barn / m_mn;
+  Float const n_si = wt_si * _density * n_avo_barn / m_si;
+  Float const n_p  =  wt_p * _density * n_avo_barn / m_p;
+  Float const n_s  =  wt_s * _density * n_avo_barn / m_s;
+
+  // Iron natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_fe54 =  5.845 / 100;
+  Float constexpr ab_fe56 = 91.754 / 100;
+  Float constexpr ab_fe57 =  2.119 / 100;
+  Float constexpr ab_fe58 =  0.282 / 100;
+
+  // Chromium natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_cr50 =  4.345 / 100;
+  Float constexpr ab_cr52 = 83.789 / 100;
+  Float constexpr ab_cr53 =  9.501 / 100;
+  Float constexpr ab_cr54 =  2.365 / 100;
+
+  // Nickel natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_ni58 = 68.0769 / 100;
+  Float constexpr ab_ni60 = 26.2231 / 100;
+  Float constexpr ab_ni61 =  1.1399 / 100;
+  Float constexpr ab_ni62 =  3.6345 / 100;
+  Float constexpr ab_ni64 =  0.9256 / 100;
+
+  // Carbon natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_c12 = 98.93 / 100;
+  Float constexpr ab_c13 =  1.07 / 100;
+
+  // Manganese natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_mn55 = 100.0 / 100;
+
+  // Silicon natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_si28 = 92.223 / 100;
+  Float constexpr ab_si29 =  4.685 / 100;
+  Float constexpr ab_si30 =  3.092 / 100;
+
+  // Phosphorus natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_p31 = 100.0 / 100;
+
+  // Sulfur natural abundances
+  //---------------------------------------------------------------------------
+  Float constexpr ab_s32 = 94.99 / 100;
+  Float constexpr ab_s33 =  0.75 / 100;
+  Float constexpr ab_s34 =  4.25 / 100;
+  Float constexpr ab_s36 =  0.01 / 100;
+
+  // Compute number density per isotope and add to material
+  //---------------------------------------------------------------------------
+  addNuclide(26054, ab_fe54 * n_fe);
+  addNuclide(26056, ab_fe56 * n_fe);
+  addNuclide(26057, ab_fe57 * n_fe);
+  addNuclide(26058, ab_fe58 * n_fe);
+  addNuclide(24050, ab_cr50 * n_cr);
+  addNuclide(24052, ab_cr52 * n_cr);
+  addNuclide(24053, ab_cr53 * n_cr);
+  addNuclide(24054, ab_cr54 * n_cr);
+  addNuclide(28058, ab_ni58 * n_ni);
+  addNuclide(28060, ab_ni60 * n_ni);
+  addNuclide(28061, ab_ni61 * n_ni);
+  addNuclide(28062, ab_ni62 * n_ni);
+  addNuclide(28064, ab_ni64 * n_ni);
+  addNuclide(6012,  ab_c12  * n_c);
+  addNuclide(6013,  ab_c13  * n_c);
+  addNuclide(25055, ab_mn55 * n_mn);
+  addNuclide(14028, ab_si28 * n_si);
+  addNuclide(14029, ab_si29 * n_si);
+  addNuclide(14030, ab_si30 * n_si);
+  addNuclide(15031, ab_p31  * n_p);
+  addNuclide(16032, ab_s32  * n_s);
+  addNuclide(16033, ab_s33  * n_s);
+  addNuclide(16034, ab_s34  * n_s);
+  addNuclide(16036, ab_s36  * n_s);
+}
+
 //==============================================================================
 // Free functions
 //==============================================================================
