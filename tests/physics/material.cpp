@@ -12,8 +12,6 @@
 
 #include "../test_macros.hpp"
 
-Float constexpr n_avo_barn = 0.602214076;
-
 TEST_CASE(addNuclide)
 {
   um2::Material m;
@@ -71,12 +69,15 @@ TEST_CASE(setH2O)
   water.setH2O();
   Float const relative_density = 0.726 / 0.743;
   ASSERT(water.numNuclides() == 2);
-  int iH = -1, iO = -1;
+  int iH = -1;
+  int iO = -1;
   for (int i = 0; i < water.numNuclides(); ++i) {
-    if (water.zaid(i) == 1001)
+    if (water.zaid(i) == 1001) {
       iH = i;
-    if (water.zaid(i) == 8016)
+    }
+    if (water.zaid(i) == 8016) {
       iO = i;
+    }
   }
   ASSERT(iH != -1);
   ASSERT(iO != -1);
@@ -92,19 +93,28 @@ TEST_CASE(setZirc4)
   Float const relative_density = 6.56 / 6.56;
   ASSERT(zirc4.numNuclides() == 29);
 
-  int iZr90 = -1, iSn120 = -1, iFe56 = -1, iCr52 = -1, iHf178 = -1;
+  int iZr90 = -1;
+  int iSn120 = -1;
+  int iFe56 = -1;
+  int iCr52 = -1;
+  int iHf178 = -1;
   for (int i = 0; i < zirc4.numNuclides(); ++i) {
     int const z = zirc4.zaid(i);
-    if (z == 40090)
+    if (z == 40090) {
       iZr90 = i;
-    if (z == 50120)
+    }
+    if (z == 50120) {
       iSn120 = i;
-    if (z == 26056)
+    }
+    if (z == 26056) {
       iFe56 = i;
-    if (z == 24052)
+    }
+    if (z == 24052) {
       iCr52 = i;
-    if (z == 72178)
+    }
+    if (z == 72178) {
       iHf178 = i;
+    }
     ASSERT(zirc4.numDensity(i) > 0);
   }
 
@@ -129,23 +139,36 @@ TEST_CASE(setSS304)
   Float const relative_density = 8.0 / 8.0;
   ASSERT(ss304.numNuclides() == 17);
 
-  int iFe56 = -1, iCr52 = -1, iNi58 = -1, iCnat = -1, iMn55 = -1, iSinat = -1, iP31 = -1;
+  int iFe56 = -1;
+  int iCr52 = -1;
+  int iNi58 = -1;
+  int iCnat = -1;
+  int iMn55 = -1;
+  int iSinat = -1;
+  int iP31 = -1;
   for (int i = 0; i < ss304.numNuclides(); ++i) {
     int const z = ss304.zaid(i);
-    if (z == 26056)
+    if (z == 26056) {
       iFe56 = i;
-    if (z == 24052)
+    }
+    if (z == 24052) {
       iCr52 = i;
-    if (z == 28058)
+    }
+    if (z == 28058) {
       iNi58 = i;
-    if (z == 6000)
+    }
+    if (z == 6000) {
       iCnat = i;
-    if (z == 25055)
+    }
+    if (z == 25055) {
       iMn55 = i;
-    if (z == 14000)
+    }
+    if (z == 14000) {
       iSinat = i;
-    if (z == 15031)
+    }
+    if (z == 15031) {
       iP31 = i;
+    }
     ASSERT(ss304.numDensity(i) > 0);
   }
 
