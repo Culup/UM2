@@ -16,13 +16,12 @@ namespace um2
 // Avogadro's number * 1e-24
 Float constexpr n_avo_barn = 0.602214076;
 
-// The default materials specified here are intended to be consistent with the default materials compositions defined by VERA.
-// The default VERA compositions are defined in the CORE.ini file of VERAIn.
-// The latest version of which can be found here:
+// The default materials specified here are intended to be consistent with the default
+// materials compositions defined by VERA. The default VERA compositions are defined in
+// the CORE.ini file of VERAIn. The latest version of which can be found here:
 // https://code.ornl.gov/vera/veraio/-/blob/master/verain/scripts/Init/CORE.ini?ref_type=heads
-// The specifications here are inconsistent, they should be updated to match those in that file.
-// This is a weak dependency.
-
+// The specifications here are inconsistent, they should be updated to match those in that
+// file. This is a weak dependency.
 
 um2::Vector<um2::Pair<Int, Float>> const ZAID_ATOMIC_MASS = {
     { 1001, 1.00783},
