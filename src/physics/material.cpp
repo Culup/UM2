@@ -16,6 +16,9 @@ namespace um2
 // Avogadro's number * 1e-24
 Float constexpr n_avo_barn = 0.602214076;
 
+// VERAIn CORE.INI:
+// https://code.ornl.gov/vera/veraio/-/blob/master/verain/scripts/Init/CORE.ini?ref_type=heads
+
 um2::Vector<um2::Pair<Int, Float>> const ZAID_ATOMIC_MASS = {
     { 1001, 1.00783},
     { 1002,  2.0141},
@@ -608,7 +611,7 @@ Material::setUO2(Float wt_u235, Float wt_gad) noexcept
 // H2O preset material.
 // Atomic weights from IUPAC/CIAAW.
 // Assumes light water (H2O).
-// Source for number densitiies: VERAIn manual(CORE.INI).
+// Source for reference number densities: VERAIn manual (CORE.INI).
 // Populates this Material with isotopic ZAIDs and number densities.
 // Requires _density to be set.
 void
@@ -618,7 +621,9 @@ Material::setH2O() noexcept
 
   // Following same naming conventions as setUO2
 
-  Float relativeDensity = _density / 0.743; // 0.743 g/cm^3 is the density of H2O at 565K
+  // Reference density of light water at 565 K under typical
+  // PWR conditions (~15.5 MPa), consistent with VERA CORE.INI.
+  Float relativeDensity = _density / 0.743;
 
   // Compute number densities
   //---------------------------------------------------------------------------
@@ -631,11 +636,11 @@ Material::setH2O() noexcept
 
 // Zircaloy-4 preset material.
 // Natural isotopic abundances / standard atomic weights from IUPAC/CIAAW.
-// Source for nominal composition & number densities: VERAIn manual(CORE.INI).
+// Source for nominal composition and number densities: VERAIn manual (CORE.INI).
 // Populates this Material with isotopic ZAIDs and number densities.
 // Requires _density to be set.
 void
-Material::setZirc4() noexcept 
+Material::setZirc4() noexcept
 {
   ASSERT(_density > 0);
 
@@ -678,7 +683,7 @@ Material::setZirc4() noexcept
   Float const n_cr53 = 9.67361E-05 * relativeDensity;
   Float const n_cr54 = 2.45339E-05 * relativeDensity;
 
-  // Halfnium number densities
+  // Hafnium number densities
   //---------------------------------------------------------------------------
   Float const n_hf174 = 1.55926E-07 * relativeDensity;
   Float const n_hf176 = 5.18504E-06 * relativeDensity;
@@ -722,7 +727,7 @@ Material::setZirc4() noexcept
 
 // Stainless Steel 304 preset material.
 // Natural isotopic abundances / standard atomic weights from IUPAC/CIAAW.
-// Source for nominal composition & number densities: VERAIn manual.
+// Source for nominal composition and number densities: VERAIn manual.
 // Populates this Material with isotopic ZAIDs and number densities.
 // Requires _density to be set.
 void
@@ -772,7 +777,6 @@ Material::setSS304() noexcept
   //---------------------------------------------------------------------------
   Float const n_p31 = 4.50008E-04 * relativeDensity;
 
-
   // Add number densities per isotope to material
   //---------------------------------------------------------------------------
   addNuclide(26054, n_fe54);
@@ -788,7 +792,7 @@ Material::setSS304() noexcept
   addNuclide(28061, n_ni61);
   addNuclide(28062, n_ni62);
   addNuclide(28064, n_ni64);
-  addNuclide(6000,  n_cnat);
+  addNuclide(6000, n_cnat);
   addNuclide(25055, n_mn55);
   addNuclide(14000, n_sinat);
   addNuclide(15031, n_p31);
