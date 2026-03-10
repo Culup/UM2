@@ -69,20 +69,20 @@ TEST_CASE(setH2O)
   water.setH2O();
   Float const relative_density = 0.726 / 0.743;
   ASSERT(water.numNuclides() == 2);
-  int iH = -1;
-  int iO = -1;
+  int i_h = -1;
+  int i_o = -1;
   for (int i = 0; i < water.numNuclides(); ++i) {
     if (water.zaid(i) == 1001) {
-      iH = i;
+      i_h = i;
     }
     if (water.zaid(i) == 8016) {
-      iO = i;
+      i_o = i;
     }
   }
-  ASSERT(iH != -1);
-  ASSERT(iO != -1);
-  ASSERT_NEAR(water.numDensity(iH), 1.11915E-01 * relative_density, 1e-6);
-  ASSERT_NEAR(water.numDensity(iO), 8.88085E-01 * relative_density, 1e-6);
+  ASSERT(i_h != -1);
+  ASSERT(i_o != -1);
+  ASSERT_NEAR(water.numDensity(i_h), 1.11915E-01 * relative_density, 1e-6);
+  ASSERT_NEAR(water.numDensity(i_o), 8.88085E-01 * relative_density, 1e-6);
 }
 
 TEST_CASE(setZirc4)
@@ -93,42 +93,42 @@ TEST_CASE(setZirc4)
   Float const relative_density = 6.56 / 6.56;
   ASSERT(zirc4.numNuclides() == 29);
 
-  int iZr90 = -1;
-  int iSn120 = -1;
-  int iFe56 = -1;
-  int iCr52 = -1;
-  int iHf178 = -1;
+  int i_zr90 = -1;
+  int i_sn120 = -1;
+  int i_fe56 = -1;
+  int i_cr52 = -1;
+  int i_hf178 = -1;
   for (int i = 0; i < zirc4.numNuclides(); ++i) {
     int const z = zirc4.zaid(i);
     if (z == 40090) {
-      iZr90 = i;
+      i_zr90 = i;
     }
     if (z == 50120) {
-      iSn120 = i;
+      i_sn120 = i;
     }
     if (z == 26056) {
-      iFe56 = i;
+      i_fe56 = i;
     }
     if (z == 24052) {
-      iCr52 = i;
+      i_cr52 = i;
     }
     if (z == 72178) {
-      iHf178 = i;
+      i_hf178 = i;
     }
     ASSERT(zirc4.numDensity(i) > 0);
   }
 
-  ASSERT(iZr90 != -1);
-  ASSERT(iSn120 != -1);
-  ASSERT(iFe56 != -1);
-  ASSERT(iCr52 != -1);
-  ASSERT(iHf178 != -1);
+  ASSERT(i_zr90 != -1);
+  ASSERT(i_sn120 != -1);
+  ASSERT(i_fe56 != -1);
+  ASSERT(i_cr52 != -1);
+  ASSERT(i_hf178 != -1);
 
-  ASSERT_NEAR(zirc4.numDensity(iZr90), 4.98086E-01 * relative_density, 1e-6);
-  ASSERT_NEAR(zirc4.numDensity(iSn120), 4.77153E-03 * relative_density, 1e-6);
-  ASSERT_NEAR(zirc4.numDensity(iFe56), 1.92992E-03 * relative_density, 1e-6);
-  ASSERT_NEAR(zirc4.numDensity(iCr52), 8.36988E-04 * relative_density, 1e-6);
-  ASSERT_NEAR(zirc4.numDensity(iHf178), 2.71973E-05 * relative_density, 1e-6);
+  ASSERT_NEAR(zirc4.numDensity(i_zr90), 4.98086E-01 * relative_density, 1e-6);
+  ASSERT_NEAR(zirc4.numDensity(i_sn120), 4.77153E-03 * relative_density, 1e-6);
+  ASSERT_NEAR(zirc4.numDensity(i_fe56), 1.92992E-03 * relative_density, 1e-6);
+  ASSERT_NEAR(zirc4.numDensity(i_cr52), 8.36988E-04 * relative_density, 1e-6);
+  ASSERT_NEAR(zirc4.numDensity(i_hf178), 2.71973E-05 * relative_density, 1e-6);
 }
 
 TEST_CASE(setSS304)
@@ -139,54 +139,54 @@ TEST_CASE(setSS304)
   Float const relative_density = 8.0 / 8.0;
   ASSERT(ss304.numNuclides() == 17);
 
-  int iFe56 = -1;
-  int iCr52 = -1;
-  int iNi58 = -1;
-  int iCnat = -1;
-  int iMn55 = -1;
-  int iSinat = -1;
-  int iP31 = -1;
+  int i_fe56 = -1;
+  int i_cr52 = -1;
+  int i_ni58 = -1;
+  int i_cnat = -1;
+  int i_mn55 = -1;
+  int i_sinat = -1;
+  int i_p31 = -1;
   for (int i = 0; i < ss304.numNuclides(); ++i) {
     int const z = ss304.zaid(i);
     if (z == 26056) {
-      iFe56 = i;
+      i_fe56 = i;
     }
     if (z == 24052) {
-      iCr52 = i;
+      i_cr52 = i;
     }
     if (z == 28058) {
-      iNi58 = i;
+      i_ni58 = i;
     }
     if (z == 6000) {
-      iCnat = i;
+      i_cnat = i;
     }
     if (z == 25055) {
-      iMn55 = i;
+      i_mn55 = i;
     }
     if (z == 14000) {
-      iSinat = i;
+      i_sinat = i;
     }
     if (z == 15031) {
-      iP31 = i;
+      i_p31 = i;
     }
     ASSERT(ss304.numDensity(i) > 0);
   }
 
-  ASSERT(iFe56 != -1);
-  ASSERT(iCr52 != -1);
-  ASSERT(iNi58 != -1);
-  ASSERT(iCnat != -1);
-  ASSERT(iMn55 != -1);
-  ASSERT(iSinat != -1);
-  ASSERT(iP31 != -1);
+  ASSERT(i_fe56 != -1);
+  ASSERT(i_cr52 != -1);
+  ASSERT(i_ni58 != -1);
+  ASSERT(i_cnat != -1);
+  ASSERT(i_mn55 != -1);
+  ASSERT(i_sinat != -1);
+  ASSERT(i_p31 != -1);
 
-  ASSERT_NEAR(ss304.numDensity(iFe56), 6.28376E-01 * relative_density, 1e-6);
-  ASSERT_NEAR(ss304.numDensity(iCr52), 1.59029E-01 * relative_density, 1e-6);
-  ASSERT_NEAR(ss304.numDensity(iNi58), 6.38386E-02 * relative_density, 1e-6);
-  ASSERT_NEAR(ss304.numDensity(iCnat), 7.99365E-04 * relative_density, 1e-6);
-  ASSERT_NEAR(ss304.numDensity(iMn55), 2.00001E-02 * relative_density, 1e-6);
-  ASSERT_NEAR(ss304.numDensity(iSinat), 1.00002E-02 * relative_density, 1e-6);
-  ASSERT_NEAR(ss304.numDensity(iP31), 4.50008E-04 * relative_density, 1e-6);
+  ASSERT_NEAR(ss304.numDensity(i_fe56), 6.28376E-01 * relative_density, 1e-6);
+  ASSERT_NEAR(ss304.numDensity(i_cr52), 1.59029E-01 * relative_density, 1e-6);
+  ASSERT_NEAR(ss304.numDensity(i_ni58), 6.38386E-02 * relative_density, 1e-6);
+  ASSERT_NEAR(ss304.numDensity(i_cnat), 7.99365E-04 * relative_density, 1e-6);
+  ASSERT_NEAR(ss304.numDensity(i_mn55), 2.00001E-02 * relative_density, 1e-6);
+  ASSERT_NEAR(ss304.numDensity(i_sinat), 1.00002E-02 * relative_density, 1e-6);
+  ASSERT_NEAR(ss304.numDensity(i_p31), 4.50008E-04 * relative_density, 1e-6);
 }
 
 TEST_SUITE(Material)
