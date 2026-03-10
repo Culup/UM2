@@ -623,12 +623,12 @@ Material::setH2O() noexcept
 
   // Reference density of light water at 565 K under typical
   // PWR conditions (~15.5 MPa), consistent with VERA CORE.INI.
-  Float relativeDensity = _density / 0.743;
+  Float const relative_density = _density / 0.743;
 
   // Compute number densities
   //---------------------------------------------------------------------------
-  Float const n_h = 1.11915E-01 * relativeDensity;
-  Float const n_o = 8.88085E-01 * relativeDensity;
+  Float const n_h = 1.11915E-01 * relative_density;
+  Float const n_o = 8.88085E-01 * relative_density;
 
   addNuclide(1001, n_h);
   addNuclide(8016, n_o);
@@ -646,51 +646,51 @@ Material::setZirc4() noexcept
 
   // Following same naming conventions as setUO2
 
-  Float const relativeDensity = _density / 6.56;
+  Float const relative_density = _density / 6.56;
 
   // Zirconium number densities
   //---------------------------------------------------------------------------
-  Float const n_zr90 = 4.98086E-01 * relativeDensity;
-  Float const n_zr91 = 1.09830E-01 * relativeDensity;
-  Float const n_zr92 = 1.69723E-01 * relativeDensity;
-  Float const n_zr94 = 1.75744E-01 * relativeDensity;
-  Float const n_zr96 = 2.89168E-02 * relativeDensity;
+  Float const n_zr90 = 4.98086E-01 * relative_density;
+  Float const n_zr91 = 1.09830E-01 * relative_density;
+  Float const n_zr92 = 1.69723E-01 * relative_density;
+  Float const n_zr94 = 1.75744E-01 * relative_density;
+  Float const n_zr96 = 2.89168E-02 * relative_density;
 
   // Tin number densities
   //---------------------------------------------------------------------------
-  Float const n_sn112 = 1.32586E-04 * relativeDensity;
-  Float const n_sn114 = 9.18243E-05 * relativeDensity;
-  Float const n_sn115 = 4.77190E-05 * relativeDensity;
-  Float const n_sn116 = 2.05842E-03 * relativeDensity;
-  Float const n_sn117 = 1.09665E-03 * relativeDensity;
-  Float const n_sn118 = 3.48799E-03 * relativeDensity;
-  Float const n_sn119 = 1.24758E-03 * relativeDensity;
-  Float const n_sn120 = 4.77153E-03 * relativeDensity;
-  Float const n_sn122 = 6.89408E-04 * relativeDensity;
-  Float const n_sn124 = 8.76293E-04 * relativeDensity;
+  Float const n_sn112 = 1.32586E-04 * relative_density;
+  Float const n_sn114 = 9.18243E-05 * relative_density;
+  Float const n_sn115 = 4.77190E-05 * relative_density;
+  Float const n_sn116 = 2.05842E-03 * relative_density;
+  Float const n_sn117 = 1.09665E-03 * relative_density;
+  Float const n_sn118 = 3.48799E-03 * relative_density;
+  Float const n_sn119 = 1.24758E-03 * relative_density;
+  Float const n_sn120 = 4.77153E-03 * relative_density;
+  Float const n_sn122 = 6.89408E-04 * relative_density;
+  Float const n_sn124 = 8.76293E-04 * relative_density;
 
   // Iron number densities
   //---------------------------------------------------------------------------
-  Float const n_fe54 = 1.18556E-04 * relativeDensity;
-  Float const n_fe56 = 1.92992E-03 * relativeDensity;
-  Float const n_fe57 = 4.53675E-05 * relativeDensity;
-  Float const n_fe58 = 6.14347E-06 * relativeDensity;
+  Float const n_fe54 = 1.18556E-04 * relative_density;
+  Float const n_fe56 = 1.92992E-03 * relative_density;
+  Float const n_fe57 = 4.53675E-05 * relative_density;
+  Float const n_fe58 = 6.14347E-06 * relative_density;
 
   // Chromium number densities
   //---------------------------------------------------------------------------
-  Float const n_cr50 = 4.17369E-05 * relativeDensity;
-  Float const n_cr52 = 8.36988E-04 * relativeDensity;
-  Float const n_cr53 = 9.67361E-05 * relativeDensity;
-  Float const n_cr54 = 2.45339E-05 * relativeDensity;
+  Float const n_cr50 = 4.17369E-05 * relative_density;
+  Float const n_cr52 = 8.36988E-04 * relative_density;
+  Float const n_cr53 = 9.67361E-05 * relative_density;
+  Float const n_cr54 = 2.45339E-05 * relative_density;
 
   // Hafnium number densities
   //---------------------------------------------------------------------------
-  Float const n_hf174 = 1.55926E-07 * relativeDensity;
-  Float const n_hf176 = 5.18504E-06 * relativeDensity;
-  Float const n_hf177 = 1.84393E-05 * relativeDensity;
-  Float const n_hf178 = 2.71973E-05 * relativeDensity;
-  Float const n_hf179 = 1.36552E-05 * relativeDensity;
-  Float const n_hf180 = 3.53673E-05 * relativeDensity;
+  Float const n_hf174 = 1.55926E-07 * relative_density;
+  Float const n_hf176 = 5.18504E-06 * relative_density;
+  Float const n_hf177 = 1.84393E-05 * relative_density;
+  Float const n_hf178 = 2.71973E-05 * relative_density;
+  Float const n_hf179 = 1.36552E-05 * relative_density;
+  Float const n_hf180 = 3.53673E-05 * relative_density;
 
   // Add number densities per isotope to material
   //---------------------------------------------------------------------------
@@ -737,45 +737,45 @@ Material::setSS304() noexcept
 
   // Following same naming conventions as setUO2
 
-  Float const relativeDensity = _density / 8.0;
+  Float const relative_density = _density / 8.0;
 
   // Iron number densities
   //---------------------------------------------------------------------------
-  Float const n_fe54 = 3.86016E-02 * relativeDensity;
-  Float const n_fe56 = 6.28376E-01 * relativeDensity;
-  Float const n_fe57 = 1.47715E-02 * relativeDensity;
-  Float const n_fe58 = 2.00030E-03 * relativeDensity;
+  Float const n_fe54 = 3.86016E-02 * relative_density;
+  Float const n_fe56 = 6.28376E-01 * relative_density;
+  Float const n_fe57 = 1.47715E-02 * relative_density;
+  Float const n_fe58 = 2.00030E-03 * relative_density;
 
   // Chromium number densities
   //---------------------------------------------------------------------------
-  Float const n_cr50 = 7.93005E-03 * relativeDensity;
-  Float const n_cr52 = 1.59029E-01 * relativeDensity;
-  Float const n_cr53 = 1.83800E-02 * relativeDensity;
-  Float const n_cr54 = 4.66146E-03 * relativeDensity;
+  Float const n_cr50 = 7.93005E-03 * relative_density;
+  Float const n_cr52 = 1.59029E-01 * relative_density;
+  Float const n_cr53 = 1.83800E-02 * relative_density;
+  Float const n_cr54 = 4.66146E-03 * relative_density;
 
   // Nickel number densities
   //---------------------------------------------------------------------------
-  Float const n_ni58 = 6.38386E-02 * relativeDensity;
-  Float const n_ni60 = 2.54373E-02 * relativeDensity;
-  Float const n_ni61 = 1.12420E-03 * relativeDensity;
-  Float const n_ni62 = 3.64308E-03 * relativeDensity;
-  Float const n_ni64 = 9.57752E-04 * relativeDensity;
+  Float const n_ni58 = 6.38386E-02 * relative_density;
+  Float const n_ni60 = 2.54373E-02 * relative_density;
+  Float const n_ni61 = 1.12420E-03 * relative_density;
+  Float const n_ni62 = 3.64308E-03 * relative_density;
+  Float const n_ni64 = 9.57752E-04 * relative_density;
 
   // Carbon number densities
   //---------------------------------------------------------------------------
-  Float const n_cnat = 7.99365E-04 * relativeDensity;
+  Float const n_cnat = 7.99365E-04 * relative_density;
 
   // Manganese number densities
   //---------------------------------------------------------------------------
-  Float const n_mn55 = 2.00001E-02 * relativeDensity;
+  Float const n_mn55 = 2.00001E-02 * relative_density;
 
   // Silicon number densities
   //---------------------------------------------------------------------------
-  Float const n_sinat = 1.00002E-02 * relativeDensity;
+  Float const n_sinat = 1.00002E-02 * relative_density;
 
   // Phosphorus number densities
   //---------------------------------------------------------------------------
-  Float const n_p31 = 4.50008E-04 * relativeDensity;
+  Float const n_p31 = 4.50008E-04 * relative_density;
 
   // Add number densities per isotope to material
   //---------------------------------------------------------------------------
