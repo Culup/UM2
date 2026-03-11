@@ -1,6 +1,6 @@
 #pragma once
 
-#include <um2.hpp>
+#include <um2/config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -139,6 +139,29 @@ um2MPACTAssemblyHeights(void * model, Int asy_id, Float * heights);
 void
 um2MPACTCoarseCellFaceData(void * model, Int cc_id, Int * mesh_type, Int * num_vertices,
                            Int * num_faces, Float ** vertices, Int ** fv);
+
+//==============================================================================
+// Materials
+//==============================================================================
+void
+addNuclide(Int zaid, Float num_density);
+
+void
+setUO2(Float wt_u235, Float wt_gad);
+
+void
+setH2O();
+
+void 
+setSS304();
+
+void
+setZirc4();
+
+//==============================================================================
+// Models
+//==============================================================================
+
 
 #ifdef __cplusplus
 }

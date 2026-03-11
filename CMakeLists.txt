@@ -366,6 +366,11 @@ configure_file(
   "${PROJECT_SOURCE_DIR}/cmake/config.hpp.in"
   "${PROJECT_SOURCE_DIR}/include/um2/config.hpp")
 
+# config.h
+configure_file(
+  "${PROJECT_SOURCE_DIR}/cmake/config.h.in"
+  "${PROJECT_SOURCE_DIR}/include/um2/config.h")
+
 #===============================================================================
 # Dependencies
 #===============================================================================

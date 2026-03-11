@@ -1,5 +1,7 @@
 #pragma once
 
+#include <um2/config.h>
+
 //==============================================================================
 // CMake defines
 //==============================================================================
@@ -12,7 +14,6 @@
 #cmakedefine01 UM2_ENABLE_ASSERTS
 #cmakedefine01 UM2_ENABLE_BMI2
 #cmakedefine01 UM2_ENABLE_FASTMATH
-#cmakedefine01 UM2_ENABLE_FLOAT64
 #cmakedefine01 UM2_ENABLE_SIMD_VEC
 
 // External tools/dependencies
@@ -36,8 +37,6 @@
 //==============================================================================
 // Includes
 //==============================================================================
-
-#include <cstdint> // int8_t, int32_t
 
 #if UM2_USE_OPENMP
 #  include <omp.h>
@@ -122,13 +121,6 @@
 // Typedefs
 //==============================================================================
 
-// Floating point type
-#if UM2_ENABLE_FLOAT64
-using Float = double;
-#else
-using Float = float;
-#endif
-
 #if UM2_USE_CUDA
 template <class T>
 using Complex = cuda::std::complex<T>;
@@ -148,17 +140,12 @@ conj(T const & z) noexcept -> T
 #endif
 }
 
-// Integer type
-using Int = int32_t;
+// Integer max
 HOSTDEV consteval auto
 intMax() noexcept -> Int
 {
-  return INT32_MAX;
+  return UM2_MAX_INT;
 }
-
-// Integer type for material IDs.
-// We don't expect more than 127 materials, so we use int8_t to save memory.
-using MatID = int8_t;
 
 //==============================================================================
 // Misc.

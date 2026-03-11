@@ -1,0 +1,24 @@
+#pragma once
+
+// C-compatible core typedefs shared by the C ABI and C++ config.
+
+#include <stdint.h>
+#include <limits.h>
+
+#cmakedefine01 UM2_ENABLE_FLOAT64
+
+// Integer type
+typedef int32_t Int;
+
+#define UM2_MAX_INT INT32_MAX
+
+// Floating point type
+#if UM2_ENABLE_FLOAT64
+typedef double Float;
+#else
+typedef float Float;
+#endif
+
+// Integer type for material IDs.
+// We don't expect more than 127 materials, so we use int8_t to save memory.
+typedef int8_t MatID;

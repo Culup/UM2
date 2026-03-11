@@ -1,5 +1,6 @@
 # Build directory
 build/
+python/build/
 
 # MPACT data
 MPACT_Extras/
@@ -7,3 +8,10 @@ MPACT_Extras
 
 # config files
 include/um2/config.hpp
+include/um2/config.h
+
+.venv/
+.vscode/
+CMakeCache.txt
+CMakeFiles/
+Testing/
