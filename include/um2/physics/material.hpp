@@ -194,6 +194,15 @@ public:
   // wt_gad is the wt% of Gd2O3 in the final UO2-Gd2O3 mixture
   void
   setUO2(Float wt_u235, Float wt_gad = 0) noexcept;
+
+  void
+  setH2O() noexcept;
+
+  void
+  setZirc4() noexcept;
+
+  void
+  setSS304() noexcept;
 };
 
 //======================================================================
