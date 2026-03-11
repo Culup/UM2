@@ -201,7 +201,7 @@ public:
   void
   setZirc4() noexcept;
 
-  void 
+  void
   setSS304() noexcept;
 };
 
