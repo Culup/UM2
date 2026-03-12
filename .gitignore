@@ -10,8 +10,6 @@ MPACT_Extras
 include/um2/config.hpp
 include/um2/config.h
 
+# VSCode files
 .venv/
 .vscode/
-CMakeCache.txt
-CMakeFiles/
-Testing/
