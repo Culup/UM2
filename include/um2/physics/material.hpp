@@ -190,6 +190,9 @@ public:
   void
   populateXSec(XSLibrary const & xsec_lib) noexcept;
 
+  void
+  populateXSec() noexcept;
+  
   // wt_u235 is the wt% of U-235 amongst the uranium isotopes
   // wt_gad is the wt% of Gd2O3 in the final UO2-Gd2O3 mixture
   void

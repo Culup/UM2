@@ -6,10 +6,15 @@ python/build/
 MPACT_Extras/
 MPACT_Extras
 
-# config files
+# Config files
 include/um2/config.hpp
 include/um2/config.h
+python/um2/config.pxd
 
 # VSCode files
 .venv/
 .vscode/
+
+# CMake files
+python/um2/_um2.c
+python/um2/_um2.cpp

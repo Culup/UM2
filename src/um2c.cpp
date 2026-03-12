@@ -8,6 +8,7 @@
 #include <um2/mesh/element_types.hpp>
 #include <um2/mesh/face_vertex_mesh.hpp>
 #include <um2/mpact/model.hpp>
+#include <um2/physics/material.hpp>
 #include <um2/stdlib/assert.hpp>
 #include <um2/stdlib/math/abs.hpp>
 #include <um2/stdlib/string.hpp>
@@ -85,12 +86,10 @@ um2DeleteMPACTModel(void * const model)
 }
 
 void
-um2ReadMPACTModel(char const * const path, void ** const model)
+um2MPACTReadModel(void * model, char const * path)
 {
   um2::String const path_str(path);
-  *model = reinterpret_cast<void *>(new um2::mpact::Model());
-  auto & sp = *reinterpret_cast<um2::mpact::Model *>(*model);
-  sp.read(path_str);
+  reinterpret_cast<um2::mpact::Model *>(model)->read(path_str);
 }
 
 // Num
@@ -683,4 +682,61 @@ um2MPACTCoarseCellFaceData(void * const model, Int const cc_id, Int * const mesh
     LOG_ERROR("Invalid mesh type");
     return;
   }
+}
+
+//==============================================================================
+// Materials
+//==============================================================================
+void
+um2NewMaterial(void ** const material)
+{
+  *material = reinterpret_cast<void *>(new um2::Material());
+}
+
+void
+um2DeleteMaterial(void * const material)
+{
+  delete reinterpret_cast<um2::Material *>(material);
+}
+
+void
+um2AddNuclide(void * material, Int zaid, Float num_density)
+{
+  auto * mat = reinterpret_cast<um2::Material *>(material);
+  mat->addNuclide(zaid, num_density);
+}
+
+void
+um2SetUO2(void * material, Float wt_u235, Float wt_gad)
+{
+  auto * mat = reinterpret_cast<um2::Material *>(material);
+  mat->setUO2(wt_u235, wt_gad);
+}
+
+void
+um2SetH2O(void * material)
+{
+  auto * mat = reinterpret_cast<um2::Material *>(material);
+  mat->setH2O();
+}
+
+void
+um2SetSS304(void * material)
+{
+  auto * mat = reinterpret_cast<um2::Material *>(material);
+  mat->setSS304();
+}
+
+void
+um2SetZirc4(void * material)
+{
+  auto * mat = reinterpret_cast<um2::Material *>(material);
+  mat->setZirc4();
+}
+
+void 
+um2PopulateXSec(void * material)
+{
+  auto * mat = reinterpret_cast<um2::Material *>(material);
+  mat->populateXSec();
 }

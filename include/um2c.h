@@ -48,7 +48,7 @@ void
 um2DeleteMPACTModel(void * model);
 
 void
-um2ReadMPACTModel(char const * path, void ** model);
+um2MPACTReadModel(void * model, char const * path);
 
 // Num
 //------------------------------------------------------------------------------
@@ -143,25 +143,65 @@ um2MPACTCoarseCellFaceData(void * model, Int cc_id, Int * mesh_type, Int * num_v
 //==============================================================================
 // Materials
 //==============================================================================
-void
-addNuclide(Int zaid, Float num_density);
+void 
+um2NewMaterial(void ** material);
 
 void
-setUO2(Float wt_u235, Float wt_gad);
+um2DeleteMaterial(void * material);
+
+Int
+um2MaterialNumNuclides(void * material);
 
 void
-setH2O();
+um2MaterialSetName(void * material);
+
+char const * 
+um2MaterialGetName(void * material);
+
+void
+um2MaterialSetColor(void * material);
+
+void
+um2MaterialSetTemperature(void * material);
+
+void
+um2MaterialSetDensity(void * material);
+
+void
+um2MaterialGetColor(void * material);
+
+void
+um2MaterialGetTemperature(void * material);
+
+void
+um2MaterialGetDensity(void * material);
+
+Int
+um2MaterialZaid(void * material, Int i);
+
+Float
+um2MaterialNumDensity(void * material, Int i);
+
+void
+um2MaterialZaids(void * material, Int * zaids);
+
+void
+um2MaterialAddNuclide(void * material, Int zaid, Float num_density);
+
+void
+um2MaterialPopulateXSec(void * materal);
+
+void
+um2MaterialSetUO2(void * material, Float wt_u235, Float wt_gad);
+
+void
+um2MaterialSetH2O(void * material);
 
 void 
-setSS304();
+um2MaterialSetSS304(void * material);
 
 void
-setZirc4();
-
-//==============================================================================
-// Models
-//==============================================================================
-
+um2MaterialSetZirc4(void * material);
 
 #ifdef __cplusplus
 }

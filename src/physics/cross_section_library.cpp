@@ -454,6 +454,14 @@ XSLibrary::XSLibrary(String const & filename)
   readMPACTLibrary(filename, *this);
 }
 
+// Singleton for the cross section library
+XSLibrary const & getDefaultXSLibrary()
+{
+  static XSLibrary instance(
+      settings::xs::library_path + "/" + mpact::XSLIB_51G);
+  return instance;
+}
+
 PURE [[nodiscard]] auto
 XSLibrary::getNuclide(Int zaid) const noexcept -> Nuclide const &
 {

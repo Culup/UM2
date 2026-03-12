@@ -361,6 +361,18 @@ target_include_directories(um2
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
+# cython float type
+if(UM2_ENABLE_FLOAT64)
+  set(CYTHON_FLOAT_TYPE "double")
+else()
+  set(CYTHON_FLOAT_TYPE "float")
+endif()
+
+# config.pxd
+configure_file(
+  "${PROJECT_SOURCE_DIR}/cmake/config.pxd.in"
+  "${PROJECT_SOURCE_DIR}/python/um2/config.pxd")
+
 # config.hpp
 configure_file(
   "${PROJECT_SOURCE_DIR}/cmake/config.hpp.in"

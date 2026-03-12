@@ -1,0 +1,5 @@
+from libc.stdint cimport int8_t, int32_t
+
+ctypedef int32_t Int
+ctypedef @CYTHON_FLOAT_TYPE@ Float
+ctypedef int8_t MatID

@@ -1,4 +1,4 @@
-from ._um2 cimport Int
+from .config cimport Int, Float, MatID
 from ._um2 cimport (
     um2SizeOfInt,
     um2SizeOfFloat,
@@ -14,8 +14,31 @@ from ._um2 cimport (
     um2MPACTCoreNumCells,
     um2MPACTAssemblyNumCells,
     um2MPACTLatticeNumCells,
-    um2MPACTRTMNumCells
+    um2MPACTRTMNumCells,
+    addNuclide,
+    populateXSec,
+    setUO2,
+    setH2O,
+    setZirc4,
+    setSS304
 )
+
+def size_of_int():
+    cdef int n
+    um2SizeOfInt(&n)
+    return n
+
+
+def size_of_float():
+    cdef int n
+    um2SizeOfFloat(&n)
+    return n
+
+def initialize():
+    um2Initialize()
+
+def finalize():
+    um2Finalize()
 
 cdef class MPACTModel:
     cdef void * model_ptr
@@ -27,7 +50,7 @@ cdef class MPACTModel:
         um2DeleteMPACTModel(self.model_ptr)
 
     def read_from_file(self, path):
-        um2ReadMPACTModel(path.encode('utf-8'), &self.model_ptr)
+        um2MPACTModelRead(self.model_ptr, path.encode('utf-8'))
 
     def num_coarse_cells(self):
         cdef Int n
@@ -72,19 +95,29 @@ cdef class MPACTModel:
         um2MPACTRTMNumCells(self.model_ptr, rtm_id, &nx, &ny)
         return (nx, ny)
 
-def size_of_int(int size):
-        cdef int n
-        um2SizeOfInt(&n)
-        return n
+cdef class Material:
+    cdef void * material_ptr
 
+    def __cinit__(self):
+        um2NewMaterial(&self.material_ptr)
+    
+    def __dealloc__(self):
+        um2DeleteMaterial(self.material_ptr)
+    
+    def add_nuclide(self, Int zaid, Float num_density):
+        um2MaterialAddNuclide(self.material_ptr, zaid, num_density)
+    
+    def populate_xsec(self):
+        um2MaterialPopulateXSec(self.material_ptr)
 
-def size_of_float(int size):
-        cdef int n
-        um2SizeOfFloat(&n)
-        return n
+    def set_uo2(self, Float wt_u235, Float wt_gad):
+        um2SetUO2(self.material_ptr, wt_u235, wt_gad)
 
-def initialize():
-    um2Initialize()
+    def set_h2o(self):
+        um2SetH2O(self.material_ptr)
 
-def finalize():
-    um2Finalize()
+    def set_zirc4(self):
+        um2SetZirc4(self.material_ptr)
+    
+    def set_ss304(self):
+        um2SetSS304(self.material_ptr)

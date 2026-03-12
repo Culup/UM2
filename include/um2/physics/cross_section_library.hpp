@@ -92,4 +92,7 @@ public:
   getNuclide(Int zaid) const noexcept -> Nuclide const &;
 };
 
+// Singleton for the cross section library
+XSLibrary const & getDefaultXSLibrary();
+
 } // namespace um2

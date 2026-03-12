@@ -502,6 +502,12 @@ Material::populateXSec(XSLibrary const & xsec_lib) noexcept
 }
 
 void
+Material::populateXSec() noexcept
+{
+  populateXSec(getDefaultXSLibrary());
+}
+
+void
 Material::setUO2(Float wt_u235, Float wt_gad) noexcept
 {
   ASSERT(wt_u235 >= 0);
