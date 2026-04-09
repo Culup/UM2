@@ -1,20 +1,33 @@
-# Build directory
+# Build directories
 build/
 python/build/
 
-# MPACT data
-MPACT_Extras/
-MPACT_Extras
+# CMake-generated files
+CMakeCache.txt
+CMakeFiles/
+Testing/
+compile_commands.json
 
 # Config files
 include/um2/config.hpp
 include/um2/config.h
 python/um2/config.pxd
 
-# VSCode files
+# Python packaging/build artifacts
+*.egg-info/
+__pycache__/
+*.pyc
+
+# Virtual env / editor
 .venv/
 .vscode/
 
-# CMake files
+# Generated Cython files
 python/um2/_um2.c
 python/um2/_um2.cpp
+
+# Generated color files
+python/um2/common_colors.py
+include/um2c_colors.h
+src/um2c_colors.cpp
+

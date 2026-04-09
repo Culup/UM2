@@ -47,7 +47,7 @@ TEST_CASE(read_mpact_model)
 {
   um2Initialize();
   void * sp = nullptr;
-  um2ReadMPACTModel("./api_mesh_files/1a_nogap.xdmf", &sp);
+  um2ReadMPACTModel(&sp, "./api_mesh_files/1a_nogap.xdmf");
   ASSERT(sp != nullptr);
 
   auto const & model = *reinterpret_cast<um2::mpact::Model *>(sp);
@@ -85,7 +85,7 @@ TEST_CASE(mpact_num_cells)
 {
   um2Initialize();
   void * sp = nullptr;
-  um2ReadMPACTModel("./api_mesh_files/1a_nogap.xdmf", &sp);
+  um2ReadMPACTModel(&sp, "./api_mesh_files/1a_nogap.xdmf");
   Int nx = -1;
   Int ny = -1;
 
@@ -123,7 +123,7 @@ TEST_CASE(mpact_get_child)
 {
   um2Initialize();
   void * sp = nullptr;
-  um2ReadMPACTModel("./api_mesh_files/1a_nogap.xdmf", &sp);
+  um2ReadMPACTModel(&sp, "./api_mesh_files/1a_nogap.xdmf");
   Int id = -1;
 
   // Core
@@ -154,7 +154,7 @@ TEST_CASE(coarse_cell_functions)
 {
   um2Initialize();
   void * sp = nullptr;
-  um2ReadMPACTModel("./api_mesh_files/1a_nogap.xdmf", &sp);
+  um2ReadMPACTModel(&sp, "./api_mesh_files/1a_nogap.xdmf");
   ASSERT(sp != nullptr);
 
   // numFaces

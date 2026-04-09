@@ -6,6 +6,23 @@
 extern "C" {
 #endif
 
+typedef struct {
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+  uint8_t a;
+} UM2_Color_t;
+
+typedef enum {
+  UM2_MESH_INVALID = 0,
+  UM2_MESH_TRI = 3,
+  UM2_MESH_QUAD = 4,
+  UM2_MESH_TRIQUAD = 7,
+  UM2_MESH_QUADRATIC_TRI = 6,
+  UM2_MESH_QUADRATIC_QUAD = 8,
+  UM2_MESH_QUADRATIC_TRIQUAD = 14
+} UM2_MeshType_t;
+
 //==============================================================================
 // Data sizes 
 //==============================================================================
@@ -48,7 +65,15 @@ void
 um2DeleteMPACTModel(void * model);
 
 void
-um2MPACTReadModel(void * model, char const * path);
+um2ReadMPACTModel(void * model, char const * path);
+
+// Model construction
+// ------------------------------------------------------------------------------
+void
+um2MPACTModelAddMaterial(void * model, void const * material);
+
+void
+um2MPACTModelAddCoarseGrid(void * model, Float width, Float height, Int nx, Int ny);
 
 // Num
 //------------------------------------------------------------------------------
@@ -141,6 +166,46 @@ um2MPACTCoarseCellFaceData(void * model, Int cc_id, Int * mesh_type, Int * num_v
                            Int * num_faces, Float ** vertices, Int ** fv);
 
 //==============================================================================
+// GMSH Model Manipulation
+//==============================================================================
+
+void
+um2OverlayCoarseGrid(void * model, void const * material);
+
+void
+um2AddCylindricalPinLattice2D(Int const * lattice_ids, Int nx, Int ny,
+                              Float const * xy_extents,               // length = 2 * num_pin_types
+                              Float const * pin_radii_flat,
+                              Int const * pin_radii_offsets,          // length = num_pin_types + 1
+                              void const * const * pin_materials_flat,
+                              Int const * pin_material_offsets,       // length = num_pin_types + 1
+                              Int num_pin_types,
+                              Float origin_x,
+                              Float origin_y);
+
+void
+um2SetMeshFieldFromKnudsenNumber(Int dim, void const * model,
+                                 double kn_target, double mfp_threshold = -1.0,
+                                 double mfp_scale = -1.0,
+                                 double abs_mfp_threshold = -1.0, 
+                                 double abs_mfp_scale = -1.0);
+
+void
+um2GenerateMesh(UM2_MeshType_t mesh_type);
+
+void
+um2MPACTModelImportCoarseCellMeshesAndWrite(void * model,
+                                            char const * mesh_path,
+                                            char const * model_path,
+                                            int write_knudsen_data);
+
+void
+um2MPACTExportModel(void * model,
+                      char const * mesh_path,
+                      char const * model_path,
+                      int write_knudsen_data);
+
+//==============================================================================
 // Materials
 //==============================================================================
 void 
@@ -150,46 +215,49 @@ void
 um2DeleteMaterial(void * material);
 
 Int
-um2MaterialNumNuclides(void * material);
+um2MaterialNumNuclides(void const * material);
 
 void
-um2MaterialSetName(void * material);
+um2MaterialSetName(void * material, char const * name);
+
+void
+um2MaterialSetColor(void * material, UM2_Color_t color);
+
+void
+um2MaterialSetTemperature(void * material, Float temperature);
+
+void
+um2MaterialSetDensity(void * material, Float density);
 
 char const * 
-um2MaterialGetName(void * material);
+um2MaterialGetName(void const * material);
 
-void
-um2MaterialSetColor(void * material);
-
-void
-um2MaterialSetTemperature(void * material);
-
-void
-um2MaterialSetDensity(void * material);
-
-void
-um2MaterialGetColor(void * material);
-
-void
-um2MaterialGetTemperature(void * material);
-
-void
-um2MaterialGetDensity(void * material);
-
-Int
-um2MaterialZaid(void * material, Int i);
+UM2_Color_t
+um2MaterialGetColor(void const * material);
 
 Float
-um2MaterialNumDensity(void * material, Int i);
+um2MaterialGetTemperature(void const * material);
+
+Float
+um2MaterialGetDensity(void const * material);
 
 void
-um2MaterialZaids(void * material, Int * zaids);
+um2MaterialNumDensities(void const * material, Float * num_densities);
+
+Float
+um2MaterialNumDensity(void const * material, Int i);
+
+void
+um2MaterialZaids(void const * material, Int * zaids);
+
+Int
+um2MaterialZaid(void const * material, Int i);
 
 void
 um2MaterialAddNuclide(void * material, Int zaid, Float num_density);
 
 void
-um2MaterialPopulateXSec(void * materal);
+um2MaterialPopulateXSec(void * material);
 
 void
 um2MaterialSetUO2(void * material, Float wt_u235, Float wt_gad);
@@ -202,6 +270,14 @@ um2MaterialSetSS304(void * material);
 
 void
 um2MaterialSetZirc4(void * material);
+
+Int
+um2NumC5G7Materials(void);
+
+void
+um2GetC5G7Materials(void ** materials);
+
+
 
 #ifdef __cplusplus
 }
