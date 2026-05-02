@@ -45,6 +45,9 @@ ext = Extension(
 setup(
     name="um2",
     packages=find_packages(),
+    install_requires=[
+        "gmsh",
+    ],
     cmdclass={
         "build_py": build_py,
         "develop": develop,

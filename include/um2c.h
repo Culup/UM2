@@ -75,14 +75,82 @@ um2MPACTModelAddMaterial(void * model, void const * material);
 void
 um2MPACTModelAddCoarseGrid(void * model, Float width, Float height, Int nx, Int ny);
 
+void
+um2MPACTModelImportCoarseCellMeshesAndWrite(void * model,
+                                            char const * mesh_path,
+                                            char const * model_path,
+                                            int write_knudsen_data);
+
+void
+um2MPACTExportModel(void * model,
+                      char const * mesh_path,
+                      char const * model_path,
+                      int write_knudsen_data);
+
+Int
+um2MPACTModelAddCylindricalPinMesh(void * model,
+                                   Float pitch,
+                                   Float const * radii,
+                                   Int const * rings,
+                                   Int n_radii,
+                                   Int num_azi,
+                                   Int mesh_order);
+
+Int
+um2MPACTModelAddRectangularPinMesh(void * model,
+                                   Float width,
+                                   Float height,
+                                   Int nx,
+                                   Int ny);
+
+void
+um2MPACTModelAddCoarseCell(void * model,
+                           Float width,
+                           Float height,
+                           UM2_MeshType_t mesh_type,
+                           Int mesh_id,
+                           MatID const * mat_ids,
+                           Int n_mat_ids);
+
+void
+um2MPACTModelAddRTM(void * model,
+                    Int const * ids,
+                    Int nx,
+                    Int ny);
+
+void
+um2MPACTModelAddLattice(void * model,
+                        Int const * ids,
+                        Int nx,
+                        Int ny);
+
+void
+um2MPACTModelAddAssembly(void * model,
+                         Int const * lattice_ids,
+                         Float const * z_slices,
+                         Int n_lattice_ids);
+
+void
+um2MPACTModelAddCore(void * model,
+                     Int const * ids,
+                     Int nx,
+                     Int ny);
+
+void
+um2MPACTModelWrite(void * model,
+                   char const * path);
+
 // Num
 //------------------------------------------------------------------------------
 void
 um2MPACTNumCoarseCells(void * model, Int * n);
+
 void
 um2MPACTNumRTMs(void * model, Int * n);
+
 void
 um2MPACTNumLattices(void * model, Int * n);
+
 void
 um2MPACTNumAssemblies(void * model, Int * n);
 
@@ -90,10 +158,13 @@ um2MPACTNumAssemblies(void * model, Int * n);
 //------------------------------------------------------------------------------
 void
 um2MPACTCoreNumCells(void * model, Int * nx, Int * ny);
+
 void
 um2MPACTAssemblyNumCells(void * model, Int asy_id, Int * nx);
+
 void
 um2MPACTLatticeNumCells(void * model, Int lat_id, Int * nx, Int * ny);
+
 void
 um2MPACTRTMNumCells(void * model, Int rtm_id, Int * nx, Int * ny);
 
@@ -191,19 +262,10 @@ um2SetMeshFieldFromKnudsenNumber(Int dim, void const * model,
                                  double abs_mfp_scale = -1.0);
 
 void
+um2SetGlobalMeshSize(double const mesh_size);
+
+void
 um2GenerateMesh(UM2_MeshType_t mesh_type);
-
-void
-um2MPACTModelImportCoarseCellMeshesAndWrite(void * model,
-                                            char const * mesh_path,
-                                            char const * model_path,
-                                            int write_knudsen_data);
-
-void
-um2MPACTExportModel(void * model,
-                      char const * mesh_path,
-                      char const * model_path,
-                      int write_knudsen_data);
 
 //==============================================================================
 // Materials

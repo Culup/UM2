@@ -111,84 +111,6 @@ um2MPACTModelAddCoarseGrid(void * model, Float width, Float height, Int nx, Int 
 }
 
 void
-um2OverlayCoarseGrid(void * model, void const * material)
-{
-  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
-  auto const & mat = *reinterpret_cast<um2::Material const *>(material);
-  um2::gmsh::model::occ::overlayCoarseGrid(sp, mat);
-}
-
-void
-um2AddCylindricalPinLattice2D(Int const * lattice_ids, Int nx, Int ny,
-                              Float const * xy_extents,
-                              Float const * pin_radii_flat,
-                              Int const * pin_radii_offsets,
-                              void const * const * pin_materials_flat,
-                              Int const * pin_material_offsets,
-                              Int num_pin_types,
-                              Float origin_x,
-                              Float origin_y)
-{
-  um2::Vector<um2::Vector<Int>> lattice(static_cast<size_t>(ny));
-  for (Int iy = 0; iy < ny; ++iy) {
-    lattice[static_cast<size_t>(iy)].resize(static_cast<size_t>(nx));
-    for (Int ix = 0; ix < nx; ++ix) {
-      lattice[static_cast<size_t>(iy)][static_cast<size_t>(ix)] =
-          lattice_ids[static_cast<size_t>(iy * nx + ix)];
-    }
-  }
-
-  um2::Vector<um2::Vec2F> extents(static_cast<size_t>(num_pin_types));
-  for (Int i = 0; i < num_pin_types; ++i) {
-    extents[static_cast<size_t>(i)] =
-        um2::Vec2F(xy_extents[2 * i], xy_extents[2 * i + 1]);
-  }
-
-  um2::Vector<um2::Vector<Float>> radii(static_cast<size_t>(num_pin_types));
-  for (Int i = 0; i < num_pin_types; ++i) {
-    Int const begin = pin_radii_offsets[i];
-    Int const end = pin_radii_offsets[i + 1];
-    radii[static_cast<size_t>(i)].resize(static_cast<size_t>(end - begin));
-    for (Int j = begin; j < end; ++j) {
-      radii[static_cast<size_t>(i)][static_cast<size_t>(j - begin)] =
-          pin_radii_flat[static_cast<size_t>(j)];
-    }
-  }
-
-  um2::Vector<um2::Vector<um2::Material>> mats(static_cast<size_t>(num_pin_types));
-  for (Int i = 0; i < num_pin_types; ++i) {
-    Int const begin = pin_material_offsets[i];
-    Int const end = pin_material_offsets[i + 1];
-    mats[static_cast<size_t>(i)].resize(static_cast<size_t>(end - begin));
-    for (Int j = begin; j < end; ++j) {
-      auto const * mat =
-          reinterpret_cast<um2::Material const *>(pin_materials_flat[static_cast<size_t>(j)]);
-      ASSERT(mat != nullptr);
-      mats[static_cast<size_t>(i)][static_cast<size_t>(j - begin)] = *mat;
-    }
-  }
-
-  um2::gmsh::model::occ::addCylindricalPinLattice2D(
-      lattice, extents, radii, mats, um2::Point2F(origin_x, origin_y));
-}
-
-void
-um2SetMeshFieldFromKnudsenNumber(Int dim, void const * model,
-                                 double target_kn, double mfp_threshold, double mfp_scale,
-                                 double abs_mfp_threshold, double abs_mfp_scale)
-{
-  auto const & sp = *reinterpret_cast<um2::mpact::Model const *>(model);
-  um2::gmsh::model::mesh::setMeshFieldFromKnudsenNumber(
-      dim, sp.materials(), target_kn, mfp_threshold, mfp_scale, abs_mfp_threshold, abs_mfp_scale);
-}
-
-void
-um2GenerateMesh(UM2_MeshType_t mesh_type)
-{
-  um2::gmsh::model::mesh::generateMesh(static_cast<um2::MeshType>(mesh_type));
-}
-
-void
 um2MPACTModelImportCoarseCellMeshesAndWrite(void * model,
                                             char const * mesh_path,
                                             char const * model_path,
@@ -209,6 +131,152 @@ um2MPACTExportModel(void * model,
   um2::gmsh::write(mesh_path);
   sp.importCoarseCellMeshes(mesh_path);
   sp.write(model_path, write_knudsen_data != 0);
+}
+
+Int
+um2MPACTModelAddCylindricalPinMesh(void * model,
+                                   Float const pitch,
+                                   Float const * radii,
+                                   Int const * rings,
+                                   Int const n_radii,
+                                   Int const num_azi,
+                                   Int const mesh_order)
+{
+  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
+
+  um2::Vector<Float> radii_vec(static_cast<size_t>(n_radii));
+  um2::Vector<Int> rings_vec(static_cast<size_t>(n_radii));
+
+  for (Int i = 0; i < n_radii; ++i) {
+    radii_vec[static_cast<size_t>(i)] = radii[static_cast<size_t>(i)];
+    rings_vec[static_cast<size_t>(i)] = rings[static_cast<size_t>(i)];
+  }
+
+  return sp.addCylindricalPinMesh(pitch, radii_vec, rings_vec, num_azi, mesh_order);
+}
+
+Int
+um2MPACTModelAddRectangularPinMesh(void * model,
+                                   Float const width,
+                                   Float const height,
+                                   Int const nx,
+                                   Int const ny)
+{
+  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
+  return sp.addRectangularPinMesh(um2::Vec2F(width, height), nx, ny);
+}
+
+void
+um2MPACTModelAddCoarseCell(void * model,
+                           Float const width,
+                           Float const height,
+                           UM2_MeshType_t const mesh_type,
+                           Int const mesh_id,
+                           MatID const * mat_ids,
+                           Int const n_mat_ids)
+{
+  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
+
+  um2::Vector<MatID> mat_ids_vec(static_cast<size_t>(n_mat_ids));
+  for (Int i = 0; i < n_mat_ids; ++i) {
+    mat_ids_vec[static_cast<size_t>(i)] = mat_ids[static_cast<size_t>(i)];
+  }
+
+  sp.addCoarseCell(
+      um2::Vec2F(width, height),
+      static_cast<um2::MeshType>(mesh_type),
+      mesh_id,
+      mat_ids_vec);
+}
+
+void
+um2MPACTModelAddRTM(void * model,
+                    Int const * ids,
+                    Int const nx,
+                    Int const ny)
+{
+  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
+
+  um2::Vector<um2::Vector<Int>> ids_vec(static_cast<size_t>(ny));
+  for (Int iy = 0; iy < ny; ++iy) {
+    ids_vec[static_cast<size_t>(iy)].resize(static_cast<size_t>(nx));
+    for (Int ix = 0; ix < nx; ++ix) {
+      ids_vec[static_cast<size_t>(iy)][static_cast<size_t>(ix)] =
+          ids[static_cast<size_t>(iy * nx + ix)];
+    }
+  }
+
+  sp.addRTM(ids_vec);
+}
+
+void
+um2MPACTModelAddLattice(void * model,
+                        Int const * ids,
+                        Int const nx,
+                        Int const ny)
+{
+  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
+
+  um2::Vector<um2::Vector<Int>> ids_vec(static_cast<size_t>(ny));
+  for (Int iy = 0; iy < ny; ++iy) {
+    ids_vec[static_cast<size_t>(iy)].resize(static_cast<size_t>(nx));
+    for (Int ix = 0; ix < nx; ++ix) {
+      ids_vec[static_cast<size_t>(iy)][static_cast<size_t>(ix)] =
+          ids[static_cast<size_t>(iy * nx + ix)];
+    }
+  }
+
+  sp.addLattice(ids_vec);
+}
+
+void
+um2MPACTModelAddAssembly(void * model,
+                         Int const * lattice_ids,
+                         Float const * z_slices,
+                         Int const n_lattice_ids)
+{
+  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
+
+  um2::Vector<Int> lattice_ids_vec(static_cast<size_t>(n_lattice_ids));
+  um2::Vector<Float> z_slices_vec(static_cast<size_t>(n_lattice_ids + 1));
+
+  for (Int i = 0; i < n_lattice_ids; ++i) {
+    lattice_ids_vec[static_cast<size_t>(i)] = lattice_ids[static_cast<size_t>(i)];
+  }
+
+  for (Int i = 0; i <= n_lattice_ids; ++i) {
+    z_slices_vec[static_cast<size_t>(i)] = z_slices[static_cast<size_t>(i)];
+  }
+
+  sp.addAssembly(lattice_ids_vec, z_slices_vec);
+}
+
+void
+um2MPACTModelAddCore(void * model,
+                     Int const * ids,
+                     Int const nx,
+                     Int const ny)
+{
+  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
+
+  um2::Vector<um2::Vector<Int>> ids_vec(static_cast<size_t>(ny));
+  for (Int iy = 0; iy < ny; ++iy) {
+    ids_vec[static_cast<size_t>(iy)].resize(static_cast<size_t>(nx));
+    for (Int ix = 0; ix < nx; ++ix) {
+      ids_vec[static_cast<size_t>(iy)][static_cast<size_t>(ix)] =
+          ids[static_cast<size_t>(iy * nx + ix)];
+    }
+  }
+
+  sp.addCore(ids_vec);
+}
+
+void
+um2MPACTModelWrite(void * model,
+                   char const * path)
+{
+  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
+  sp.write(path);
 }
 
 // Num
@@ -797,6 +865,94 @@ um2MPACTCoarseCellFaceData(void * const model, Int const cc_id, Int * const mesh
     LOG_ERROR("Invalid mesh type");
     return;
   }
+}
+
+//==============================================================================
+// GMSH Model Manipulation
+//==============================================================================
+
+void
+um2OverlayCoarseGrid(void * model, void const * material)
+{
+  auto & sp = *reinterpret_cast<um2::mpact::Model *>(model);
+  auto const & mat = *reinterpret_cast<um2::Material const *>(material);
+  um2::gmsh::model::occ::overlayCoarseGrid(sp, mat);
+}
+
+void
+um2AddCylindricalPinLattice2D(Int const * lattice_ids, Int nx, Int ny,
+                              Float const * xy_extents,
+                              Float const * pin_radii_flat,
+                              Int const * pin_radii_offsets,
+                              void const * const * pin_materials_flat,
+                              Int const * pin_material_offsets,
+                              Int num_pin_types,
+                              Float origin_x,
+                              Float origin_y)
+{
+  um2::Vector<um2::Vector<Int>> lattice(static_cast<size_t>(ny));
+  for (Int iy = 0; iy < ny; ++iy) {
+    lattice[static_cast<size_t>(iy)].resize(static_cast<size_t>(nx));
+    for (Int ix = 0; ix < nx; ++ix) {
+      lattice[static_cast<size_t>(iy)][static_cast<size_t>(ix)] =
+          lattice_ids[static_cast<size_t>(iy * nx + ix)];
+    }
+  }
+
+  um2::Vector<um2::Vec2F> extents(static_cast<size_t>(num_pin_types));
+  for (Int i = 0; i < num_pin_types; ++i) {
+    extents[static_cast<size_t>(i)] =
+        um2::Vec2F(xy_extents[2 * i], xy_extents[2 * i + 1]);
+  }
+
+  um2::Vector<um2::Vector<Float>> radii(static_cast<size_t>(num_pin_types));
+  for (Int i = 0; i < num_pin_types; ++i) {
+    Int const begin = pin_radii_offsets[i];
+    Int const end = pin_radii_offsets[i + 1];
+    radii[static_cast<size_t>(i)].resize(static_cast<size_t>(end - begin));
+    for (Int j = begin; j < end; ++j) {
+      radii[static_cast<size_t>(i)][static_cast<size_t>(j - begin)] =
+          pin_radii_flat[static_cast<size_t>(j)];
+    }
+  }
+
+  um2::Vector<um2::Vector<um2::Material>> mats(static_cast<size_t>(num_pin_types));
+  for (Int i = 0; i < num_pin_types; ++i) {
+    Int const begin = pin_material_offsets[i];
+    Int const end = pin_material_offsets[i + 1];
+    mats[static_cast<size_t>(i)].resize(static_cast<size_t>(end - begin));
+    for (Int j = begin; j < end; ++j) {
+      auto const * mat =
+          reinterpret_cast<um2::Material const *>(pin_materials_flat[static_cast<size_t>(j)]);
+      ASSERT(mat != nullptr);
+      mats[static_cast<size_t>(i)][static_cast<size_t>(j - begin)] = *mat;
+    }
+  }
+
+  um2::gmsh::model::occ::addCylindricalPinLattice2D(
+      lattice, extents, radii, mats, um2::Point2F(origin_x, origin_y));
+}
+
+void
+um2SetMeshFieldFromKnudsenNumber(Int dim, void const * model,
+                                 double target_kn, double mfp_threshold, double mfp_scale,
+                                 double abs_mfp_threshold, double abs_mfp_scale)
+{
+  auto const & sp = *reinterpret_cast<um2::mpact::Model const *>(model);
+  um2::gmsh::model::mesh::setMeshFieldFromKnudsenNumber(
+      dim, sp.materials(), target_kn, mfp_threshold, mfp_scale, abs_mfp_threshold, abs_mfp_scale);
+}
+
+void
+um2SetGlobalMeshSize(double const mesh_size)
+{
+  um2::gmsh::model::mesh::setGlobalMeshSize(mesh_size);
+}
+
+void
+um2GenerateMesh(UM2_MeshType_t mesh_type)
+{
+  um2::gmsh::model::mesh::generateMesh(static_cast<um2::MeshType>(mesh_type));
 }
 
 //==============================================================================

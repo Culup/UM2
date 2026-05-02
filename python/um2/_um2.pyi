@@ -1,4 +1,6 @@
-from typing import Any, Sequence
+from typing import Sequence
+
+MatID = int
 
 MESH_INVALID: int
 MESH_TRI: int
@@ -22,6 +24,8 @@ def set_mesh_field_from_knudsen_number(
     abs_mfp_threshold: float = -1.0,
     abs_mfp_scale: float = -1.0,
 ) -> None: ...
+
+def set_global_mesh_size(size: float) -> None: ...
 
 def generate_mesh(mesh_type: int) -> None: ...
 
@@ -86,6 +90,56 @@ class Material:
 class MPACTModel:
     def __init__(self) -> None: ...
     def add_material(self, material: Material) -> None: ...
-    def add_coarse_grid(self, x_extent: float, y_extent: float, nx: int, ny: int) -> None: ...
-    def export_model(self, inp_path: str, xdmf_path: str, write_knudsen_data: bool) -> None: ...
+    def add_coarse_grid(
+        self,
+        x_extent: float,
+        y_extent: float,
+        nx: int,
+        ny: int,
+    ) -> None: ...
+    def add_cylindrical_pin_mesh(
+        self,
+        pitch: float,
+        radii: Sequence[float],
+        rings: Sequence[int],
+        num_azi: int,
+        mesh_order: int,
+    ) -> int: ...
+    def add_rectangular_pin_mesh(
+        self,
+        xy_extents: Sequence[float],
+        nx: int,
+        ny: int,
+    ) -> int: ...
+    def add_coarse_cell(
+        self,
+        xy_extents: Sequence[float],
+        mesh_type: int,
+        mesh_id: int,
+        mat_ids: Sequence[MatID],
+    ) -> None: ...
+    def add_rtm(
+        self,
+        ids: Sequence[Sequence[int]],
+    ) -> None: ...
+    def add_lattice(
+        self,
+        ids: Sequence[Sequence[int]],
+    ) -> None: ...
+    def add_assembly(
+        self,
+        lattice_ids: Sequence[int],
+        z_slices: Sequence[float],
+    ) -> None: ...
+    def add_core(
+        self,
+        ids: Sequence[Sequence[int]],
+    ) -> None: ...
+    def write(self, path: str) -> None: ...
+    def export_model(
+        self,
+        inp_path: str,
+        xdmf_path: str,
+        write_knudsen_data: bool = True,
+    ) -> None: ...
     def close(self) -> None: ...

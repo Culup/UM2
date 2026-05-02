@@ -16,9 +16,18 @@ from ._um2 cimport (
     um2OverlayCoarseGrid,
     um2AddCylindricalPinLattice2D,
     um2SetMeshFieldFromKnudsenNumber,
+    um2SetGlobalMeshSize,
     um2GenerateMesh,
     um2MPACTModelImportCoarseCellMeshesAndWrite,
     um2MPACTExportModel,
+    um2MPACTModelAddCylindricalPinMesh,
+    um2MPACTModelAddRectangularPinMesh,
+    um2MPACTModelAddCoarseCell,
+    um2MPACTModelAddRTM,
+    um2MPACTModelAddLattice,
+    um2MPACTModelAddAssembly,
+    um2MPACTModelAddCore,
+    um2MPACTModelWrite,
     um2MPACTNumCoarseCells,
     um2MPACTNumRTMs,
     um2MPACTNumLattices,
@@ -115,6 +124,178 @@ cdef class MPACTModel:
                             model_path.encode("utf-8"),
                             1 if write_knudsen_data else 0)
 
+    def add_cylindrical_pin_mesh(self, Float pitch, radii, rings, Int num_azi, Int mesh_order):
+        cdef Int n = len(radii)
+        cdef Int i
+        cdef Float * radii_buf = NULL
+        cdef Int * rings_buf = NULL
+
+        if len(rings) != n:
+            raise ValueError("radii and rings must have the same length")
+
+        radii_buf = <Float *>malloc(n * sizeof(Float))
+        rings_buf = <Int *>malloc(n * sizeof(Int))
+
+        if radii_buf == NULL or rings_buf == NULL:
+            free(radii_buf)
+            free(rings_buf)
+            raise MemoryError()
+
+        try:
+            for i in range(n):
+                radii_buf[i] = <Float>radii[i]
+                rings_buf[i] = <Int>rings[i]
+
+            return um2MPACTModelAddCylindricalPinMesh(
+                self.model_ptr,
+                pitch,
+                radii_buf,
+                rings_buf,
+                n,
+                num_azi,
+                mesh_order,
+            )
+        finally:
+            free(radii_buf)
+            free(rings_buf)
+
+    def add_rectangular_pin_mesh(self, xy_extents, Int nx, Int ny):
+        if len(xy_extents) != 2:
+            raise ValueError("xy_extents must have length 2")
+
+        return um2MPACTModelAddRectangularPinMesh(
+            self.model_ptr,
+            <Float>xy_extents[0],
+            <Float>xy_extents[1],
+            nx,
+            ny,
+        )
+
+    def add_coarse_cell(self, xy_extents, UM2_MeshType_t mesh_type, Int mesh_id, mat_ids):
+        cdef Int n = len(mat_ids)
+        cdef Int i
+        cdef MatID * mat_ids_buf = NULL
+
+        if len(xy_extents) != 2:
+            raise ValueError("xy_extents must have length 2")
+
+        mat_ids_buf = <MatID *>malloc(n * sizeof(MatID))
+        if mat_ids_buf == NULL:
+            raise MemoryError()
+
+        try:
+            for i in range(n):
+                mat_ids_buf[i] = <MatID>mat_ids[i]
+
+            um2MPACTModelAddCoarseCell(
+                self.model_ptr,
+                <Float>xy_extents[0],
+                <Float>xy_extents[1],
+                mesh_type,
+                mesh_id,
+                mat_ids_buf,
+                n,
+            )
+        finally:
+            free(mat_ids_buf)
+
+    def add_rtm(self, ids):
+        cdef Int nx, ny
+        cdef Int i, j, idx
+        cdef Int * ids_buf = NULL
+
+        if not ids:
+            raise ValueError("ids cannot be empty")
+
+        ny = len(ids)
+        nx = len(ids[0])
+
+        for row in ids:
+            if len(row) != nx:
+                raise ValueError("all rows must have the same length")
+
+        ids_buf = <Int *>malloc(nx * ny * sizeof(Int))
+        if ids_buf == NULL:
+            raise MemoryError()
+
+        try:
+            idx = 0
+            for j in range(ny):
+                for i in range(nx):
+                    ids_buf[idx] = <Int>ids[j][i]
+                    idx += 1
+
+            um2MPACTModelAddRTM(self.model_ptr, ids_buf, nx, ny)
+        finally:
+            free(ids_buf)
+
+    def add_lattice(self, ids):
+        cdef Int nx, ny
+        cdef Int i, j, idx
+        cdef Int * ids_buf = NULL
+
+        if not ids:
+            raise ValueError("ids cannot be empty")
+
+        ny = len(ids)
+        nx = len(ids[0])
+
+        for row in ids:
+            if len(row) != nx:
+                raise ValueError("all rows must have the same length")
+
+        ids_buf = <Int *>malloc(nx * ny * sizeof(Int))
+        if ids_buf == NULL:
+            raise MemoryError()
+
+        try:
+            idx = 0
+            for j in range(ny):
+                for i in range(nx):
+                    ids_buf[idx] = <Int>ids[j][i]
+                    idx += 1
+
+            um2MPACTModelAddLattice(self.model_ptr, ids_buf, nx, ny)
+        finally:
+            free(ids_buf)
+
+    def add_assembly(self, lattice_ids, z_slices):
+        cdef Int n = len(lattice_ids)
+        cdef Int i
+        cdef Int * lattice_ids_buf = NULL
+        cdef Float * z_slices_buf = NULL
+
+        if len(z_slices) != n + 1:
+            raise ValueError("z_slices must have len(lattice_ids) + 1 entries")
+
+        lattice_ids_buf = <Int *>malloc(n * sizeof(Int))
+        z_slices_buf = <Float *>malloc((n + 1) * sizeof(Float))
+
+        if lattice_ids_buf == NULL or z_slices_buf == NULL:
+            free(lattice_ids_buf)
+            free(z_slices_buf)
+            raise MemoryError()
+
+        try:
+            for i in range(n):
+                lattice_ids_buf[i] = <Int>lattice_ids[i]
+
+            for i in range(n + 1):
+                z_slices_buf[i] = <Float>z_slices[i]
+
+            um2MPACTModelAddAssembly(
+                self.model_ptr,
+                lattice_ids_buf,
+                z_slices_buf,
+                n,
+            )
+        finally:
+            free(lattice_ids_buf)
+            free(z_slices_buf)
+    
+    def write(self, path):
+        um2MPACTModelWrite(self.model_ptr, path.encode("utf-8"))
+
     def num_coarse_cells(self):
         cdef Int n
         um2MPACTNumCoarseCells(self.model_ptr, &n)
@@ -177,6 +358,9 @@ def set_mesh_field_from_knudsen_number(MPACTModel model,
         abs_mfp_threshold,
         abs_mfp_scale,
     )
+
+def set_global_mesh_size(double size):
+    um2SetGlobalMeshSize(size)
 
 def generate_mesh(UM2_MeshType_t mesh_type):
     um2GenerateMesh(mesh_type)
@@ -446,7 +630,7 @@ def get_c5g7_materials():
     try:
         um2GetC5G7Materials(mats)
         for i in range(n):
-            result.append(Material.from_ptr(mats[i], owner=False))
+            result.append(Material.from_ptr(mats[i], owner=True))
     finally:
         free(mats)
 

@@ -8,14 +8,14 @@ from um2 import (
     MPACTModel,
     add_cylindrical_pin_lattice_2d,
     overlay_coarse_grid,
-    set_mesh_field_from_knudsen_number,
+    set_global_mesh_size,
     generate_mesh,
     MESH_QUADRATIC_TRI,
 )
 
 from um2.tools.utils import string_to_lattice
 
-def build_c5g7_2d(target_kn, mfp_threshold, mfp_scale):
+def build_c5g7_2d(num_coarse_cells):
     radius = 0.54
     pin_pitch = 1.26
     assembly_pitch = 21.42
@@ -34,7 +34,7 @@ def build_c5g7_2d(target_kn, mfp_threshold, mfp_scale):
         [guide_tube],
     ]
 
-    uo2_lattice = string_to_lattice("""
+    uo2_lattice = string_to_lattice(""" 
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 5 0 0 5 0 0 5 0 0 0 0 0
@@ -86,15 +86,15 @@ def build_c5g7_2d(target_kn, mfp_threshold, mfp_scale):
     add_cylindrical_pin_lattice_2d(
         mox_lattice, xy_extents, pin_radii, pin_materials, 1.0 * assembly_pitch, 2.0 * assembly_pitch
     )
-
+    
     model = MPACTModel()
     for mat in materials:
         model.add_material(mat)
-
-    model.add_coarse_grid(3.0 * assembly_pitch, 3.0 * assembly_pitch, 51, 51)
+    
+    model.add_coarse_grid(3.0 * assembly_pitch, 3.0 * assembly_pitch, num_coarse_cells, num_coarse_cells)
     overlay_coarse_grid(model, moderator)
 
-    set_mesh_field_from_knudsen_number(model, 2, target_kn, mfp_threshold, mfp_scale)
+    set_global_mesh_size(pin_pitch / 4)
     generate_mesh(MESH_QUADRATIC_TRI)
 
     model.export_model("c5g7_2d.inp", "c5g7_2d.xdmf", True)
@@ -103,14 +103,12 @@ def build_c5g7_2d(target_kn, mfp_threshold, mfp_scale):
 if __name__ == "__main__":
     initialize()
     try:
-        if len(sys.argv) != 4:
-            raise SystemExit(f"Usage: {sys.argv[0]} target_kn mfp_threshold mfp_scale")
+        if len(sys.argv) != 2:
+            raise SystemExit("Usage: python c5g7_2d_variable_grid.py num_coarse_cells")
+        
+        num_coarse_cells = int(sys.argv[1])
 
-        target_kn = float(sys.argv[1])
-        mfp_threshold = float(sys.argv[2])
-        mfp_scale = float(sys.argv[3])
-
-        build_c5g7_2d(target_kn, mfp_threshold, mfp_scale)
+        build_c5g7_2d(num_coarse_cells)
         gc.collect()
     finally:
         finalize()

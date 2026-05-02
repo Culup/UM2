@@ -49,6 +49,43 @@ cdef extern from "um2c.h":
                             const char * mesh_path,
                             const char * model_path,
                             int write_knudsen_data)
+    Int um2MPACTModelAddCylindricalPinMesh(void * model,
+                                       Float pitch,
+                                       const Float * radii,
+                                       const Int * rings,
+                                       Int n_radii,
+                                       Int num_azi,
+                                       Int mesh_order)
+    Int um2MPACTModelAddRectangularPinMesh(void * model,
+                                        Float width,
+                                        Float height,
+                                        Int nx,
+                                        Int ny)
+    void um2MPACTModelAddCoarseCell(void * model,
+                                    Float width,
+                                    Float height,
+                                    UM2_MeshType_t mesh_type,
+                                    Int mesh_id,
+                                    const MatID * mat_ids,
+                                    Int n_mat_ids)
+    void um2MPACTModelAddRTM(void * model,
+                            const Int * ids,
+                            Int nx,
+                            Int ny)
+    void um2MPACTModelAddLattice(void * model,
+                                const Int * ids,
+                                Int nx,
+                                Int ny)
+    void um2MPACTModelAddAssembly(void * model,
+                                const Int * lattice_ids,
+                                const Float * z_slices,
+                                Int n_lattice_ids)
+    void um2MPACTModelAddCore(void * model,
+                            const Int * ids,
+                            Int nx,
+                            Int ny)
+    void um2MPACTModelWrite(void * model,
+                            const char * path)
 
     # Num
     #------------------------------------------------------------------------------
@@ -114,6 +151,7 @@ cdef extern from "um2c.h":
     void um2SetMeshFieldFromKnudsenNumber(Int dim, const void * model,
                                           double target_kn, double mfp_threshold, double mfp_scale,
                                           double abs_mfp_threshold, double abs_mfp_scale)
+    void um2SetGlobalMeshSize(const double mesh_size)
     void um2GenerateMesh(UM2_MeshType_t mesh_type)
 
     #==============================================================================
